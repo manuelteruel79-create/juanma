@@ -513,22 +513,21 @@
 
     function descargarPdf() {
       if (!pdfIdActual) {
-        alert("No hay un boletín preparado o no se encontró el ID del archivo.");
+        alert("No hay un boletín preparado.");
         return;
       }
 
       try {
-        // Creamos el enlace de descarga directa nativo de Google Drive
-        const urlDescargaDirecta = "https://drive.google.com/uc?export=download&id=" + pdfIdActual;
+        // Enlace oficial de vista previa de Google Drive
+        const urlVistaDrive = "https://drive.google.com/file/d/" + pdfIdActual + "/view?usp=sharing";
         
-        // Forzamos al celular a abrirlo en una pestaña nueva, obligando a WhatsApp a liberar la descarga
-        window.open(urlDescargaDirecta, '_blank');
+        // Abre el archivo en una pestaña nueva y limpia del celular
+        window.open(urlVistaDrive, '_blank');
 
       } catch (error) {
-        alert("El navegador no pudo iniciar la descarga.");
+        alert("El navegador no pudo abrir el enlace de descarga.");
       }
     }
-
 
     function volver() {
       pdfBase64Actual = "";
