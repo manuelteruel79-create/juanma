@@ -1,64 +1,602 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Boletines - E.E.S. Nº 176</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; text-align: center; }
-        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background-color: #0056b3; color: white; border: none; font-weight: bold; cursor: pointer; }
-        .resultado { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #fafafa; display: none; text-align: left; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Portal de Boletines</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+      padding: 12px;
+    }
+
+    .contenedor {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .tarjeta {
+      width: 100%;
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow:
+        0 6px 20px rgba(0, 0, 0, .08);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      color: #1f4e79;
+    }
+
+    .subtitulo {
+      margin: 0 0 20px;
+      color: #6b7280;
+      line-height: 1.45;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 14px 0 6px;
+    }
+
+    input,
+    select {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button,
+    a.boton {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      margin-top: 12px;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: normal;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .btn-principal {
+      background: #1f4e79;
+    }
+
+    .btn-secundario {
+      background: #64748b;
+    }
+
+    .btn-volver {
+      background: #475569;
+    }
+
+    .mensaje {
+      display: none;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .exito {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .cargando {
+      display: block;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    .datos {
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .acciones button,
+    .acciones a {
+      margin-top: 0;
+    }
+
+    .visor {
+      margin-top: 16px;
+      width: 100%;
+    }
+
+    .pagina-pdf {
+      width: 100%;
+      margin: 0 auto 16px;
+      padding: 6px;
+      background: #e5e7eb;
+      border-radius: 8px;
+      overflow: auto;
+      text-align: center;
+    }
+
+    .pagina-pdf canvas {
+      display: block;
+      max-width: 100%;
+      height: auto !important;
+      margin: 0 auto;
+      background: white;
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, .15);
+    }
+
+    .barra-visor {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: white;
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .estado-render {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      text-align: center;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 7px;
+      }
+
+      .tarjeta {
+        padding: 12px;
+        border-radius: 10px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .acciones {
+        grid-template-columns: 1fr;
+      }
+
+      input,
+      select,
+      button,
+      a.boton {
+        font-size: 16px;
+      }
+
+      .pagina-pdf {
+        padding: 2px;
+        border-radius: 4px;
+      }
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
+
 <body>
+  <div class="contenedor">
 
-<div class="container">
-    <h2>Portal de Boletines</h2>
-    <p>Ingresá los datos del alumno para consultar.</p>
-    
-    <input type="text" id="dni" placeholder="Ejemplo: 12345678">
-    <input type="text" id="codigo" placeholder="Código de acceso (Ej: K7M4P9)">
-    <button onclick="consultarBoletin()">Consultar último boletín</button>
+    <section id="panelAcceso" class="tarjeta">
+      <h1>Portal de boletines</h1>
 
-    <div id="resultado" class="resultado"></div>
-</div>
+      <p class="subtitulo">
+        Ingresá el DNI del alumno, su código personal
+        y el tipo de boletín que querés consultar.
+      </p>
 
-<script>
-    function consultarBoletin() {
-        var dni = document.getElementById("dni").value;
-        var codigo = document.getElementById("codigo").value;
-        var divResultado = document.getElementById("resultado");
+      <label for="dni">
+        DNI del alumno
+      </label>
 
-        if(!dni || !codigo) { alert("Por favor, completa todos los campos."); return; }
+      <input
+        id="dni"
+        type="text"
+        inputmode="numeric"
+        maxlength="10"
+        autocomplete="off"
+        placeholder="Ejemplo: 12345678"
+      >
 
-        divResultado.style.display = "block";
-        divResultado.innerHTML = "Buscando datos, por favor espere...";
+      <label for="codigo">
+        Código de acceso
+      </label>
 
-        // REEMPLAZA CON TU URL DE GOOGLE EXEC
-        var urlWebService = "https://script.google.com/macros/s/TU_URL_DE_EXEC/exec?dni=" + dni + "&codigo=" + codigo;
+      <input
+        id="codigo"
+        type="text"
+        maxlength="12"
+        autocomplete="off"
+        autocapitalize="characters"
+        placeholder="Ejemplo: K7M4P9"
+        style="text-transform: uppercase;"
+      >
 
-        fetch(urlWebService)
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === "error") {
-                divResultado.innerHTML = "<p style='color:red;'>" + data.mensaje + "</p>";
-            } else {
-                // Aquí dibujamos los datos recibidos de la planilla directamente en GitHub
-                divResultado.innerHTML = `
-                    <p><strong>Alumno:</strong> ${data.alumno}</p>
-                    <p><strong>Curso:</strong> ${data.curso}</p>
-                    <p><strong>Inasistencias:</strong> ${data.inasistencias}</p>
-                    <a href="${data.urlPdf}" target="_blank"><button style="background-color:#28a745;">Descargar PDF</button></a>
-                `;
-            }
+      <label for="tipo">
+        Tipo de boletín
+      </label>
+
+      <select id="tipo">
+        <option value="">
+          Seleccionar
+        </option>
+
+        <option value="inasistencias">
+          Boletín de inasistencias
+        </option>
+
+        <option value="calificaciones">
+          Boletín de calificaciones
+        </option>
+      </select>
+
+      <button
+        id="btnConsultar"
+        class="btn-principal"
+        onclick="consultar()"
+      >
+        Consultar último boletín
+      </button>
+
+      <div id="mensaje" class="mensaje"></div>
+    </section>
+
+
+    <section id="panelBoletin" class="tarjeta oculto">
+      <div id="datosAlumno" class="datos"></div>
+
+      <div class="barra-visor">
+        <div class="acciones">
+          <button
+            class="btn-secundario"
+            onclick="descargarPdf()"
+          >
+            Descargar PDF
+          </button>
+
+          <button
+            class="btn-volver"
+            onclick="volver()"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+
+      <div id="estadoRender" class="estado-render">
+        Preparando el boletín...
+      </div>
+
+      <div id="visorPdf" class="visor"></div>
+    </section>
+
+  </div>
+
+
+  <script>
+    // =========================================================================
+    // ⚠️ COLOCÁ TU ENLACE /exec DE GOOGLE EN LA VARIABLE DE ABAJO
+    // =========================================================================
+    const URL_GOOGLE_WEB_APP = "https://script.google.com/macros/s/AKfycbwmyQ7K2aiXe8XMudGq318U-mD505pWETm9bAg6qJq.../exec";
+
+
+    let pdfBase64Actual = "";
+    let pdfNombreActual = "Boletin.pdf";
+    let pdfBytesActual = null;
+
+
+    function consultar() {
+      limpiarMensaje();
+
+      const dni = document
+        .getElementById("dni")
+        .value
+        .replace(/\D/g, "");
+
+      const codigo = document
+        .getElementById("codigo")
+        .value
+        .trim()
+        .toUpperCase();
+
+      const tipo = document
+        .getElementById("tipo")
+        .value;
+
+      if (!dni) {
+        mostrarMensaje("Ingresá el DNI del alumno.", "error");
+        return;
+      }
+
+      if (!codigo) {
+        mostrarMensaje("Ingresá el código de acceso.", "error");
+        return;
+      }
+
+      if (!tipo) {
+        mostrarMensaje("Seleccioná el tipo de boletín.", "error");
+        return;
+      }
+
+      const boton = document.getElementById("btnConsultar");
+      boton.disabled = true;
+      boton.textContent = "Consultando...";
+
+      mostrarMensaje("Buscando el último boletín disponible...", "cargando");
+
+      // Construcción de la URL con los parámetros correspondientes
+      const urlConParametros = URL_GOOGLE_WEB_APP + 
+        "?dni=" + encodeURIComponent(dni) + 
+        "&codigo=" + encodeURIComponent(codigo) + 
+        "&tipo=" + encodeURIComponent(tipo);
+
+      // Petición HTTP Fetch que reemplaza de forma segura a google.script.run
+      fetch(urlConParametros)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Error en la red escolar. Intente nuevamente.");
+          }
+          return response.json();
+        })
+        .then(respuestaApi => {
+          procesarRespuesta(respuestaApi);
         })
         .catch(error => {
-            divResultado.innerHTML = "<p style='color:red;'>Error de conexión. Intente nuevamente.</p>";
+          mostrarError(error);
         });
     }
-</script>
 
+
+    async function procesarRespuesta(res) {
+      restaurarBotonConsulta();
+
+      if (!res || !res.ok) {
+        mostrarMensaje(
+          res && res.mensaje
+            ? res.mensaje
+            : "No se pudo consultar el boletín.",
+          "error"
+        );
+        return;
+      }
+
+      if (!res.base64) {
+        mostrarMensaje(
+          "El boletín fue encontrado, pero el PDF no pudo prepararse.",
+          "error"
+        );
+        return;
+      }
+
+      pdfBase64Actual = res.base64;
+      pdfNombreActual = res.nombreArchivo || "Boletin.pdf";
+
+      document.getElementById("datosAlumno").innerHTML =
+        "<strong>Alumno:</strong> " + escapar(res.alumno) + "<br>" +
+        "<strong>Curso:</strong> " + escapar(res.curso) + "<br>" +
+        "<strong>DNI:</strong> " + escapar(res.dniOculto) + "<br>" +
+        "<strong>Documento:</strong> " + escapar(res.tipoDocumento) + "<br>" +
+        "<strong>Período:</strong> " + escapar(res.periodo || "Sin especificar");
+
+      document.getElementById("panelAcceso").classList.add("oculto");
+      document.getElementById("panelBoletin").classList.remove("oculto");
+
+      document.getElementById("visorPdf").innerHTML = "";
+      document.getElementById("estadoRender").classList.remove("oculto");
+      document.getElementById("estadoRender").textContent = "Preparando el boletín...";
+
+      try {
+        pdfBytesActual = base64ABytes(pdfBase64Actual);
+        await renderizarPdf(pdfBytesActual);
+
+      } catch (error) {
+        document.getElementById("estadoRender").textContent =
+          "No se pudo mostrar el PDF en pantalla. Podés usar Descargar PDF.";
+        console.error(error);
+      }
+    }
+
+
+    async function renderizarPdf(bytes) {
+      if (typeof pdfjsLib === "undefined") {
+        throw new Error("No se pudo cargar el visor PDF.");
+      }
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      const tarea = pdfjsLib.getDocument({
+        data: bytes,
+        disableFontFace: false,
+        useSystemFonts: true
+      });
+
+      const pdf = await tarea.promise;
+      const contenedor = document.getElementById("visorPdf");
+      contenedor.innerHTML = "";
+
+      for (let numeroPagina = 1; numeroPagina <= pdf.numPages; numeroPagina++) {
+        document.getElementById("estadoRender").textContent =
+          "Cargando página " + numeroPagina + " de " + pdf.numPages + "...";
+
+        const pagina = await pdf.getPage(numeroPagina);
+        const viewportBase = pagina.getViewport({ scale: 1 });
+        const anchoDisponible = Math.max(280, contenedor.clientWidth - 12);
+        const escala = Math.min(2, anchoDisponible / viewportBase.width);
+        const viewport = pagina.getViewport({ scale: escala });
+
+        const envoltorio = document.createElement("div");
+        envoltorio.className = "pagina-pdf";
+
+        const canvas = document.createElement("canvas");
+        const contexto = canvas.getContext("2d", { alpha: false });
+        const ratio = window.devicePixelRatio || 1;
+
+        canvas.width = Math.floor(viewport.width * ratio);
+        canvas.height = Math.floor(viewport.height * ratio);
+        canvas.style.width = Math.floor(viewport.width) + "px";
+        canvas.style.height = Math.floor(viewport.height) + "px";
+
+        envoltorio.appendChild(canvas);
+        contenedor.appendChild(envoltorio);
+
+        await pagina.render({
+          canvasContext: contexto,
+          viewport: viewport,
+          transform: ratio !== 1 ? [ratio, 0, 0, ratio, 0, 0] : null
+        }).promise;
+      }
+
+      document.getElementById("estadoRender").classList.add("oculto");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+
+    function descargarPdf() {
+      if (!pdfBytesActual) {
+        alert("No hay un boletín preparado.");
+        return;
+      }
+
+      try {
+        const blob = new Blob([pdfBytesActual], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const enlace = document.createElement("a");
+
+        enlace.href = url;
+        enlace.download = pdfNombreActual;
+
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+      } catch (error) {
+        alert("El navegador no pudo descargar el PDF.");
+      }
+    }
+
+
+    function volver() {
+      pdfBase64Actual = "";
+      pdfNombreActual = "Boletin.pdf";
+      pdfBytesActual = null;
+
+      document.getElementById("visorPdf").innerHTML = "";
+      document.getElementById("panelBoletin").classList.add("oculto");
+      document.getElementById("panelAcceso").classList.remove("oculto");
+      limpiarMensaje();
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+
+    function base64ABytes(base64) {
+      const binario = atob(base64);
+      const bytes = new Uint8Array(binario.length);
+      for (let i = 0; i < binario.length; i++) {
+        bytes[i] = binario.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+
+    function mostrarError(error) {
+      restaurarBotonConsulta();
+      mostrarMensaje(
+        error && error.message ? error.message : "Ocurrió un error al conectar con Google.",
+        "error"
+      );
+    }
+
+
+    function restaurarBotonConsulta() {
+      const boton = document.getElementById("btnConsultar");
+      boton.disabled = false;
+      boton.textContent = "Consultar último boletín";
+    }
+
+
+    function mostrarMensaje(texto, tipo) {
+      const caja = document.getElementById("mensaje");
+      caja.textContent = texto;
+      caja.className = "mensaje " + tipo;
+    }
+
+
+    function limpiarMensaje() {
+      const caja = document.getElementById("mensaje");
+      caja.textContent = "";
+      caja.className = "mensaje";
+    }
+
+
+    function escapar(valor) {
+      return String(valor || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
 </body>
 </html>
