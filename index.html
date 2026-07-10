@@ -428,6 +428,7 @@
 
       pdfBase64Actual = res.base64;
       pdfNombreActual = res.nombreArchivo || "Boletin.pdf";
+      pdfIdActual = res.idArchivo || "";
 
       document.getElementById("datosAlumno").innerHTML =
         "<strong>Alumno:</strong> " + escapar(res.alumno) + "<br>" +
@@ -511,27 +512,20 @@
 
 
     function descargarPdf() {
-      if (!pdfBytesActual) {
-        alert("No hay un boletín preparado.");
+      if (!pdfIdActual) {
+        alert("No hay un boletín preparado o no se encontró el ID del archivo.");
         return;
       }
 
       try {
-        const blob = new Blob([pdfBytesActual], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const enlace = document.createElement("a");
-
-        enlace.href = url;
-        enlace.download = pdfNombreActual;
-
-        document.body.appendChild(enlace);
-        enlace.click();
-        enlace.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url), 30000);
+        // Creamos el enlace de descarga directa nativo de Google Drive
+        const urlDescargaDirecta = "https://drive.google.com/uc?export=download&id=" + pdfIdActual;
+        
+        // Forzamos al celular a abrirlo en una pestaña nueva, obligando a WhatsApp a liberar la descarga
+        window.open(urlDescargaDirecta, '_blank');
 
       } catch (error) {
-        alert("El navegador no pudo descargar el PDF.");
+        alert("El navegador no pudo iniciar la descarga.");
       }
     }
 
