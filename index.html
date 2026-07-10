@@ -1,14 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Boletines</title>
+    <title>Cargando Portal de Boletines...</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
     </style>
+    <script>
+        // REPLAZA LA URL DE ABAJO POR TU ENLACE LARGO DE GOOGLE APPS SCRIPT
+        var urlGoogle = "https://script.google.com/macros/s/AKfycbwmyQ7K2aiXe8XMudGq3l8U-mD505pWETm9bAg6qJqUB1b2zyN55Gp8jaiaKcWSCo39qw/exec"; 
+
+        // Esto redirige automáticamente al celular sin usar iframes
+        window.location.href = urlGoogle;
+    </script>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbwmyQ7K2aiXe8XMudGq3l8U-mD505pWETm9bAg6qJqUB1b2zyN55Gp8jaiaKcWSCo39qw/exec"></iframe>
+    <h3>Abriendo el Portal de Boletines...</h3>
+    <p>Si no redirige automáticamente en unos segundos, <a id="enlace" href="#">haz clic aquí para ingresar</a>.</p>
+
+    <script>
+        document.getElementById("enlace").href = urlGoogle;
+    </script>
 </body>
 </html>
