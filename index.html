@@ -3,30 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargando Portal de Boletines...</title>
+    <title>Portal de Boletines - E.E.S. Nº 176</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; text-align: center; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #0056b3; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .resultado { margin-top: 20px; padding: 15px; border: 1px solid #ddd; background: #fafafa; display: none; text-align: left; }
     </style>
-    <script>
-        // REPLAZA LA URL DE ABAJO POR TU ENLACE LARGO DE GOOGLE APPS SCRIPT
-        var urlGoogle = "https://script.google.com/macros/s/AKfycbwmyQ7K2aiXe8XMudGq3l8U-mD505pWETm9bAg6qJqUB1b2zyN55Gp8jaiaKcWSCo39qw/exec"; 
-
-        // Esto redirige automáticamente al celular sin usar iframes
-        window.location.href = urlGoogle;
-    </script>
 </head>
 <body>
-    <h3>Abriendo el Portal de Boletines...</h3>
-    <p>Si no redirige automáticamente en unos segundos, <a id="enlace" href="#">haz clic aquí para ingresar</a>.</p>
 
-    <script>
-        document.getElementById("enlace").href = urlGoogle;
-    </script>
+<div class="container">
+    <h2>Portal de Boletines</h2>
+    <p>Ingresá los datos del alumno para consultar.</p>
+    
+    <input type="text" id="dni" placeholder="Ejemplo: 12345678">
+    <input type="text" id="codigo" placeholder="Código de acceso (Ej: K7M4P9)">
+    <button onclick="consultarBoletin()">Consultar último boletín</button>
+
+    <div id="resultado" class="resultado"></div>
+</div>
+
+<script>
+    function consultarBoletin() {
+        var dni = document.getElementById("dni").value;
+        var codigo = document.getElementById("codigo").value;
+        var divResultado = document.getElementById("resultado");
+
+        if(!dni || !codigo) { alert("Por favor, completa todos los campos."); return; }
+
+        divResultado.style.display = "block";
+        divResultado.innerHTML = "Buscando datos, por favor espere...";
+
+        // REEMPLAZA CON TU URL DE GOOGLE EXEC
+        var urlWebService = "https://script.google.com/macros/s/TU_URL_DE_EXEC/exec?dni=" + dni + "&codigo=" + codigo;
+
+        fetch(urlWebService)
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === "error") {
+                divResultado.innerHTML = "<p style='color:red;'>" + data.mensaje + "</p>";
+            } else {
+                // Aquí dibujamos los datos recibidos de la planilla directamente en GitHub
+                divResultado.innerHTML = `
+                    <p><strong>Alumno:</strong> ${data.alumno}</p>
+                    <p><strong>Curso:</strong> ${data.curso}</p>
+                    <p><strong>Inasistencias:</strong> ${data.inasistencias}</p>
+                    <a href="${data.urlPdf}" target="_blank"><button style="background-color:#28a745;">Descargar PDF</button></a>
+                `;
+            }
+        })
+        .catch(error => {
+            divResultado.innerHTML = "<p style='color:red;'>Error de conexión. Intente nuevamente.</p>";
+        });
+    }
+</script>
+
 </body>
 </html>
